@@ -35,6 +35,8 @@ globalVariables(c("rec", "year", "Model", "p05", "p95", "p50"))
 #' eqsr_plot(FIT, n = 20000, ggPlot = TRUE, Scale = 1000)
 #' }
 #'
+#' @importFrom mgcv gam
+#'
 #' @export
 eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
                        ggPlot = FALSE, Scale = 1)

@@ -4,8 +4,6 @@
 #'
 #' @author Einar Hjorleifsson \email{einar.hjorleifsson@@gmail.com}
 #'
-#' @export
-#'
 #' @param sim An object returned from the function eqsim_run
 #' @param ymax.multiplier A value that acts as a multiplier of the maximum observed
 #' variable being plotted. E.g. 1.2 means that for each of the three panels a, b and c
@@ -13,7 +11,11 @@
 #' and yield (catch or landings, depending on user input.
 #' @param catch Boolean, if TRUE (default) returns a plot based on catch. If false
 #' returns a plot based on landings.
-
+#'
+#' @importFrom graphics abline legend lines mtext par
+#' @importFrom graphics points text title
+#'
+#' @export
 eqsim_plot <- function(sim, ymax.multiplier=1.2, catch=TRUE)
 {
 

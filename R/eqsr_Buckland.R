@@ -1,15 +1,18 @@
 #' Stock recruitment fitting
 #'
 #' Fits one or more stock recruitment relationships to data contained in `data`
+#'
 #' @param data must be a data frame containing columns `ssb` and `rec`
 #' @param nsamp Number of nonparametric bootstrap samples to take from the stock recruitment
 #'              data (default is 5000).  If 0 (zero) then only the fits to the
 #'              data are returned and no simulations are made.
-#' @param models A character vector containing stock recruitment models to fit. 
+#' @param models A character vector containing stock recruitment models to fit.
 #'               User can set any combination of
 #'               "Ricker", "Segreg", "Bevholt", "Smooth_hockey".
+#'
+#' @importFrom stats nlminb
 #' @export
-eqsr_Buckland <- function(data, nsamp = 5000, models = c("Ricker","Segreg","Bevholt"), ...)
+eqsr_Buckland <- function(data, nsamp = 5000, models = c("Ricker","Segreg","Bevholt"))
 {
   # useful objects
   nllik <- function(param, ...) -1 * llik(param, ...)
@@ -20,7 +23,7 @@ eqsr_Buckland <- function(data, nsamp = 5000, models = c("Ricker","Segreg","Bevh
   #--------------------------------------------------------
   onefit <- function(mod) {
     fit <-
-      stats::nlminb(
+      nlminb(
         initial(mod, data),
         nllik, data = data,
         model = mod, logpar = TRUE,
@@ -48,7 +51,7 @@ eqsr_Buckland <- function(data, nsamp = 5000, models = c("Ricker","Segreg","Bevh
     {
       sdat <- data[sample(1:ndat, replace = TRUE),]
 
-      fits <- lapply(models, function(mod) stats::nlminb(initial(mod, sdat), nllik, data = sdat, model = mod, logpar = TRUE))
+      fits <- lapply(models, function(mod) nlminb(initial(mod, sdat), nllik, data = sdat, model = mod, logpar = TRUE))
 
       best <- which.min(sapply(fits, "[[", "objective"))
 

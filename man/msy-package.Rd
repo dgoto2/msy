@@ -44,6 +44,14 @@ DOI: \href{https://doi.org/10.2307/2533961}{10.2307/2533961}
 To explore the code of the package see the GitHub repo:
 \href{https://github.com/ices-tools-prod/msy}{ices-tools-prod/msy}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://github.com/ices-tools-prod/msy}
+  \item Report bugs at \url{http://github.com/ices-tools-prod/msy/issues}
+}
+
+}
 \author{
 John Simmonds, Einar Hjorleifsson, Carmen Fernandez and Colin Millar.
 }

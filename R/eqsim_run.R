@@ -126,6 +126,10 @@
 #'
 #' }
 #'
+#' @importFrom TAF msg
+#' @importFrom stats rnorm loess predict approx cor
+#' @importFrom stats quantile median density complete.cases fitted
+#'
 #' @export
 eqsim_run <- function(fit,
                       bio.years = c(-5, -1) + FLCore::dims(fit$stk)$maxyear, # years sample weights, M and mat
@@ -154,7 +158,7 @@ eqsim_run <- function(fit,
   # commented out as above line is a better check
   # if ((recruitment.trim[1] + recruitment.trim[2]) > 0) stop("recruitment truncation must be between a high - low range")
 
-  if (verbose) icesTAF::msg("Setting up...")
+  if (verbose) msg("Setting up...")
 
   if (length(bio.years) > 2)
     stop("bio.years must be given as a length two vector: c(first, last)")
@@ -298,7 +302,7 @@ eqsim_run <- function(fit,
   for (k in 1:Nmod) { resids[k,resids[k,]<lims[2,k]]=lims[2,k]}
   # end New from Simmonds 29.1.2014
 
-  if (verbose) icesTAF::msg("Running forward simulations.")
+  if (verbose) msg("Running forward simulations.")
   if (verbose) loader(0)
 
   # Looping over each F value in Fscan. For each of the Nmod SR fits
@@ -455,7 +459,7 @@ eqsim_run <- function(fit,
     if (verbose) loader(i/NF)
   }
 
-  if (verbose) icesTAF::msg("Summarising simulations")
+  if (verbose) msg("Summarising simulations")
 
   dimnames(ssbs) <- dimnames(cats) <-
     dimnames(lans) <- dimnames(recs) <-
@@ -643,7 +647,7 @@ eqsim_run <- function(fit,
     sim$rbya_all <- list(ssb=ssbsall, catch = catsall, landings = lansall, rec = recsall)
   }
 
-  if (verbose) icesTAF::msg("Calculating MSY range values")
+  if (verbose) msg("Calculating MSY range values")
 
   sim <- eqsim_range(sim)
 

@@ -47,7 +47,4 @@
 #' To explore the code of the package see the GitHub repo:
 #' \href{https://github.com/ices-tools-prod/msy}{ices-tools-prod/msy}
 #'
-#' @import graphics
-#' @import mgcv
-
-NULL
+"_PACKAGE"
