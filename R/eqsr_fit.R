@@ -44,7 +44,10 @@
 #' recruitment model to the model average fit.
 #'
 #' @examples
+#'
+#' library(FLCore)
 #' data(icesStocks)
+#' 
 #' FIT <- eqsr_fit(icesStocks$saiNS,
 #'                 nsamp = 0,
 #'                 models = c("Ricker", "Segreg"))
@@ -58,7 +61,7 @@
 #'   ab$b <- min_ssb + ab$b
 #'   Segreg(ab, ssb)
 #' }
-#' min_ssb <- min(FLCore::ssb(icesStocks$saiNS))
+#' min_ssb <- min(ssb(icesStocks$saiNS))
 #'
 #' FIT <- eqsr_fit(icesStocks$saiNS,
 #'                 nsamp = 0,
@@ -79,9 +82,11 @@
 #' eqsr_plot(FIT)
 #' }
 #'
+#' @importFrom FLCore name dims rec ssb fbar landings catch
+#'
 #' @export
 eqsr_fit <- function(stk, nsamp = 1000, models = c("Ricker","Segreg","Bevholt"),
-                     id.sr = FLCore::name(stk), remove.years = NULL, rshift = 0)
+                     id.sr = name(stk), remove.years = NULL, rshift = 0)
 {
   # some checks on the model argument
   if (!is.character(models)) stop("models arg should be character vector giving names of stock recruit models")
@@ -97,8 +102,8 @@ eqsr_fit <- function(stk, nsamp = 1000, models = c("Ricker","Segreg","Bevholt"),
 
   # get correct recruitment vector for each SSB
   # dims$min is the minimum age => recruitment age
-  dms <- FLCore::dims(stk)
-  rec <- c(FLCore::rec(stk))
+  dms <- dims(stk)
+  rec <- c(rec(stk))
   ssb_lag <- dms$min + rshift
   if (ssb_lag > 0)
   {
@@ -110,14 +115,14 @@ eqsr_fit <- function(stk, nsamp = 1000, models = c("Ricker","Segreg","Bevholt"),
   data <-
     data.frame(year = with(dms, minyear:maxyear),
                rec = rec,
-               ssb = c(FLCore::ssb(stk)),
-               fbar = c(FLCore::fbar(stk)),
-               landings = c(FLCore::landings(stk)),
-               catch = c(FLCore::catch(stk)),
+               ssb = c(ssb(stk)),
+               fbar = c(fbar(stk)),
+               landings = c(landings(stk)),
+               catch = c(catch(stk)),
                ssb_lag = ssb_lag)
 
   # remove years with NA recruitment
-  data <- data[stats::complete.cases(data),]
+  data <- data[complete.cases(data),]
 
   # which years to use in the fit
   data$remove.years <- FALSE

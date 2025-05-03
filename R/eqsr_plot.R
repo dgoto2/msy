@@ -36,6 +36,7 @@ globalVariables(c("rec", "year", "Model", "p05", "p95", "p50"))
 #' }
 #'
 #' @importFrom mgcv gam
+#' @importFrom grDevices grey
 #'
 #' @export
 eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
@@ -113,7 +114,7 @@ eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
     if (!is.null(modset)) {
       points(out$ssb, out$rec,
              pch = 20, cex = 1,
-             col = grDevices::grey(0, alpha = 0.02))
+             col = grey(0, alpha = 0.02))
 
       lines(p50 ~ ssb, col = 7, lwd = 3, data = Percentiles)
       lines(p05 ~ ssb, col = 4, lwd = 3, data = Percentiles)

@@ -8,7 +8,7 @@ eqsr_fit(
   stk,
   nsamp = 1000,
   models = c("Ricker", "Segreg", "Bevholt"),
-  id.sr = FLCore::name(stk),
+  id.sr = name(stk),
   remove.years = NULL,
   rshift = 0
 )
@@ -55,7 +55,10 @@ FLStock object. If more than one stock recruit relationship is provided, the
 models are weighted based on smooth AIC weighting (See Buckland et al., 1997).
 }
 \examples{
+
+library(FLCore)
 data(icesStocks)
+
 FIT <- eqsr_fit(icesStocks$saiNS,
                 nsamp = 0,
                 models = c("Ricker", "Segreg"))
@@ -69,7 +72,7 @@ Segreg_bounded  <- function(ab, ssb) {
   ab$b <- min_ssb + ab$b
   Segreg(ab, ssb)
 }
-min_ssb <- min(FLCore::ssb(icesStocks$saiNS))
+min_ssb <- min(ssb(icesStocks$saiNS))
 
 FIT <- eqsr_fit(icesStocks$saiNS,
                 nsamp = 0,

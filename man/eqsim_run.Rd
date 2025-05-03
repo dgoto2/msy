@@ -6,9 +6,9 @@
 \usage{
 eqsim_run(
   fit,
-  bio.years = c(-5, -1) + FLCore::dims(fit$stk)$maxyear,
+  bio.years = c(-5, -1) + dims(fit$stk)$maxyear,
   bio.const = FALSE,
-  sel.years = c(-5, -1) + FLCore::dims(fit$stk)$maxyear,
+  sel.years = c(-5, -1) + dims(fit$stk)$maxyear,
   sel.const = FALSE,
   Fscan = seq(0, 2, len = 40),
   Fcv = 0,
@@ -113,10 +113,13 @@ ICES (2015).
 }
 \examples{
 \dontrun{
+
 data(icesStocks)
+
 FIT <- eqsr_fit(icesStocks$saiNS,
-                nsamp = 1000,
-                models = c("Ricker", "Segreg"))
+  nsamp = 1000,
+  models = c("Ricker", "Segreg")
+)
 SIM <-
   eqsim_run(
     FIT,
@@ -127,7 +130,7 @@ SIM <-
     Blim = 106000,
     Bpa = 200000,
     Fscan = seq(0, 1.2, len = 40)
-   )
+  )
 
 # extract tragectories
 ssbsim <- SIM$rbya$ssb
@@ -137,17 +140,18 @@ Ftarget <- SIM$rbya$Ftarget
 
 Fval <- which(Ftarget == 0)
 Fval <- which(Ftarget > .3)[1]
-x <- ssbsim[Fval,,]
-df <- data.frame(year = 1:nrow(x),
-                 ssb = c(x),
-                 sim = rep(1:ncol(x), each = nrow(x)),
-                 model = rep(models, each = nrow(x)))
+x <- ssbsim[Fval, , ]
+df <- data.frame(
+  year = 1:nrow(x),
+  ssb = c(x),
+  sim = rep(1:ncol(x), each = nrow(x)),
+  model = rep(models, each = nrow(x))
+)
 xyplot(ssb ~ year | model, groups = sim, data = df, type = "l", col = grey(0.5, alpha = 0.5))
 
-fit <- density(x[x>1e-3], from = 0)
-plot(fit$x,fit$y*mean(x>1e-3),col="red", type = "l")
-lines(x = 0, y = mean(x<=1e-3), type = "h", lwd = 3)
-
+fit <- density(x[x > 1e-3], from = 0)
+plot(fit$x, fit$y * mean(x > 1e-3), col = "red", type = "l")
+lines(x = 0, y = mean(x <= 1e-3), type = "h", lwd = 3)
 }
 
 }
