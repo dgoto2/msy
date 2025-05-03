@@ -1,7 +1,7 @@
 Package: msy
 Type: Package
 Title: Estimation of Equilibrium Reference Points for Fsisheries
-Version: 0.1.20
+Version: 0.1.21
 Authors@R: c(
     person("John", "Simmonds", role = "aut"),
     person("Einar", "Hjorleifsson", role = "aut"),
