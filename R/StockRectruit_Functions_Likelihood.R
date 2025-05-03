@@ -6,18 +6,18 @@
 #'
 #' Starting values for hockey stick models
 #'
-#' @param model XXX
-#' @param data XXX
+#' @param model the model name, i.e. "Ricker", "Segreg", "Bevholt"
+#' @param data a data frame with columns rec and ssb
 #' @return vector of starting values
 #' @export
 initial <- function(model, data)
 {
   if (model == "Segreg") {
-    c(log(stats::median(data$rec/data$ssb, na.rm = TRUE)),
-      log(stats::median(data$ssb)), 0)
+    c(log(median(data$rec/data$ssb, na.rm = TRUE)),
+      log(median(data$ssb)), 0)
   } else if (model == "Smooth_hockey") {
-    c(log(stats::median(data$rec/data$ssb, na.rm = TRUE)),
-      log(stats::median(data$ssb)), 0)
+    c(log(median(data$rec/data$ssb, na.rm = TRUE)),
+      log(median(data$ssb)), 0)
   } else {
     c(0,0,0)
   }
@@ -117,9 +117,9 @@ llik <- function(param, data, model, logpar = FALSE)
   FUN <- match.fun(model)
   if (logpar) {
     pred <- FUN(list(a = exp(param[1]), b = exp(param[2])), data $ ssb)
-    sum( stats::dnorm(log(data $ rec), pred, exp(param[3]), log = TRUE) ) #- sum(param) # add on prior so it is uniform
+    sum( dnorm(log(data $ rec), pred, exp(param[3]), log = TRUE) ) #- sum(param) # add on prior so it is uniform
   } else {
     pred <- FUN(list(a = param[1], b = param[2]), data $ ssb)
-    sum( stats::dnorm(log(data $ rec), pred, param[3], log = TRUE) )
+    sum( dnorm(log(data $ rec), pred, param[3], log = TRUE) )
   }
 }

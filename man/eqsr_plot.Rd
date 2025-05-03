@@ -36,12 +36,12 @@ NULL produces a plot
 Plot Simulated Predictive Distribution of Recruitment
 }
 \examples{
-
 \dontrun{
 data(icesStocks)
 FIT <- eqsr_fit(icesStocks$saiNS,
-                nsamp = 1000,
-                models = c("Ricker", "Segreg"))
+  nsamp = 1000,
+  models = c("Ricker", "Segreg")
+)
 
 eqsr_plot(FIT, n = 20000)
 

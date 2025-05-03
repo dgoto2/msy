@@ -16,10 +16,10 @@ eqsim_range <-function (sim, interval=0.95)
   #abline(h = yield.p95, col = "blue", lty = 1)
 
   # Fit loess smoother to curve
-  x.lm <- stats::loess(y.95 ~ x.95, span = 0.2)
+  x.lm <-    loess(y.95 ~ x.95, span = 0.2)
   lm.pred <- data.frame(x = seq(min(x.95), max(x.95), length = 1000),
                         y = rep(NA, 1000))
-  lm.pred$y <- stats::predict(x.lm, newdata = lm.pred$x)
+  lm.pred$y <-    predict(x.lm, newdata = lm.pred$x)
   #lines(lm.pred$x, lm.pred$y, lty = 1, col = "red")
   #points(x = sim$Refs["lanF","meanMSY"],
   #      y = predict(x.lm, newdata = sim$Refs["lanF","meanMSY"]),
@@ -44,7 +44,7 @@ eqsim_range <-function (sim, interval=0.95)
 
   # Repeat for 95% of yield at F(05):
   f05 <- sim$Refs["catF","F05"]
-  yield.f05 <- stats::predict(x.lm, newdata = f05)
+  yield.f05 <-    predict(x.lm, newdata = f05)
   #points(f05, yield.f05, pch = 16, col = "green")
   yield.f05.95 <- interval * yield.f05
   #abline(h = yield.f05.95, col = "green")
@@ -75,10 +75,10 @@ eqsim_range <-function (sim, interval=0.95)
   #abline(h = yield.p95, col = "blue", lty = 1)
 
   # Fit loess smoother to curve
-  x.lm <- stats::loess(y.95 ~ x.95, span = 0.2)
+  x.lm <-    loess(y.95 ~ x.95, span = 0.2)
   lm.pred <- data.frame(x = seq(min(x.95), max(x.95), length = 1000),
                         y = rep(NA, 1000))
-  lm.pred$y <- stats::predict(x.lm, newdata = lm.pred$x)
+  lm.pred$y <-    predict(x.lm, newdata = lm.pred$x)
   #lines(lm.pred$x, lm.pred$y, lty = 1, col = "red")
 
   # Find maximum of fitted curve - this will be the new median (F(msy)
@@ -115,7 +115,7 @@ eqsim_range <-function (sim, interval=0.95)
 
   # Repeat for 95% of yield at F(05):
   f05 <- sim$Refs["catF","F05"]
-  yield.f05 <- stats::predict(x.lm, newdata = f05)
+  yield.f05 <-    predict(x.lm, newdata = f05)
   #points(f05, yield.f05, pch = 16, col = "green")
   yield.f05.95 <- interval * yield.f05
   #abline(h = yield.f05.95, col = "green")
@@ -142,16 +142,16 @@ eqsim_range <-function (sim, interval=0.95)
   #     xlab = "Total catch F", ylab = "Median SSB")
 
   # Fit loess smoother to curve
-  b.lm <- stats::loess(b.95 ~ x.95, span = 0.2)
+  b.lm <-    loess(b.95 ~ x.95, span = 0.2)
   b.lm.pred <- data.frame(x = seq(min(x.95), max(x.95), length = 1000),
                           y = rep(NA, 1000))
-  b.lm.pred$y <- stats::predict(b.lm, newdata = b.lm.pred$x)
+  b.lm.pred$y <-    predict(b.lm, newdata = b.lm.pred$x)
   #lines(b.lm.pred$x, b.lm.pred$y, lty = 1, col = "red")
 
   # Estimate SSB for median F(msy) and range
-  b.msymed <- stats::predict(b.lm, newdata = Fmsymed)
-  b.medlower <- stats::predict(b.lm, newdata = fmsy.lower.median)
-  b.medupper <- stats::predict(b.lm, newdata = fmsy.upper.median)
+  b.msymed <-    predict(b.lm, newdata = Fmsymed)
+  b.medlower <-    predict(b.lm, newdata = fmsy.lower.median)
+  b.medupper <-    predict(b.lm, newdata = fmsy.upper.median)
   #abline(v = c(fmsy.lower.median, Fmsymed, fmsy.upper.median), col = "blue", lty = c(8,1,8))
   #points(x = c(fmsy.lower.median, Fmsymed, fmsy.upper.median),
   #       y = c(b.medlower, b.msymed, b.medupper), col = "blue", pch = 16)

@@ -259,14 +259,14 @@ eqsim_run <- function(fit,
   #        deviation of initial Ferr = Fcv/sqrt(1- Fphi^2), instead of just
   #        initialising Ferr=0
   #  2014-03-12: Changed per note form Carmen/John
-  Ferr[1, ] <- stats::rnorm(n = Nmod, mean = 0, sd = 1) * Fcv / sqrt(1 - Fphi^2)
+  Ferr[1, ] <-    rnorm(n = Nmod, mean = 0, sd = 1) * Fcv / sqrt(1 - Fphi^2)
   for (j in 2:Nrun) {
-    Ferr[j, ] <- Fphi * Ferr[j - 1, ] + Fcv * stats::rnorm(n = Nmod, mean = 0, sd = 1)
+    Ferr[j, ] <- Fphi * Ferr[j - 1, ] + Fcv *    rnorm(n = Nmod, mean = 0, sd = 1)
   }
 
   # 2014-03-12: Changed per note form Carmen/John
   #  Errors in SSB: this is used when the ICES MSY HCR is applied for F
-  SSBerr <- matrix(stats::rnorm(n = Nrun * Nmod, mean = 0, sd = 1), ncol = Nmod) * SSBcv
+  SSBerr <- matrix(   rnorm(n = Nrun * Nmod, mean = 0, sd = 1), ncol = Nmod) * SSBcv
 
   rsam <- array(sample(1:ncol(weca), Nrun * Nmod, TRUE), c(Nrun, Nmod))
   rsamsel <- array(sample(1:ncol(sel), Nrun * Nmod, TRUE), c(Nrun, Nmod))
@@ -289,7 +289,7 @@ eqsim_run <- function(fit,
   # New from Simmonds' 29.1.2014
   #   Residuals of SR fits (1 value per SR fit and per simulation year
   #     but the same residual value for all Fscan values):
-  resids <- array(stats::rnorm(Nmod * (Nrun + 1), 0, SR$cv), c(Nmod, Nrun + 1))
+  resids <- array(   rnorm(Nmod * (Nrun + 1), 0, SR$cv), c(Nmod, Nrun + 1))
 
   # 2014-03-12: Changed per note form Carmen/John
   #  Autocorrelation in Recruitment Residuals:
@@ -300,7 +300,7 @@ eqsim_run <- function(fit,
     }))
     # Calculate lag 1 autocorrelation of residuals:
     rhologRec <- apply(log(fit$rby$rec) - fittedlogRec, 2, function(x) {
-      stats::cor(x[-length(x)], x[-1])
+         cor(x[-length(x)], x[-1])
     })
   }
   if (is.numeric(rhologRec)) {
@@ -461,10 +461,10 @@ eqsim_run <- function(fit,
 
     # store quantiles
     quants <- c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)
-    ssbs[, i] <- stats::quantile(ssbsa[i, , ], quants)
-    cats[, i] <- stats::quantile(catsa[i, , ], quants)
-    lans[, i] <- stats::quantile(lansa[i, , ], quants)
-    recs[, i] <- stats::quantile(recsa[i, , ], quants)
+    ssbs[, i] <-    quantile(ssbsa[i, , ], quants)
+    cats[, i] <-    quantile(catsa[i, , ], quants)
+    lans[, i] <-    quantile(lansa[i, , ], quants)
+    recs[, i] <-    quantile(recsa[i, , ], quants)
 
     # if user has requested full simulations
     if (keep.sims) {
@@ -533,10 +533,10 @@ eqsim_run <- function(fit,
 
     # So I think the alternative is not to get rid of whole SR models, but of different SR models depending on the value of F:
     catm <- apply(catsa, 1, function(x) {
-      mean(x[x <= stats::quantile(x, extreme.trim[2]) & x >= stats::quantile(x, extreme.trim[1])])
+      mean(x[x <=    quantile(x, extreme.trim[2]) & x >=    quantile(x, extreme.trim[1])])
     })
     lanm <- apply(lansa, 1, function(x) {
-      mean(x[x <= stats::quantile(x, extreme.trim[2]) & x >= stats::quantile(x, extreme.trim[1])])
+      mean(x[x <=    quantile(x, extreme.trim[2]) & x >=    quantile(x, extreme.trim[1])])
     })
   }
 
@@ -559,14 +559,14 @@ eqsim_run <- function(fit,
 
   FmsyLan <- Fscan[maxpfl]
   msymLan <- mean(FmsyLan)
-  vcumLan <- stats::median(FmsyLan)
-  fmsy.densLan <- stats::density(FmsyLan)
+  vcumLan <-    median(FmsyLan)
+  fmsy.densLan <-    density(FmsyLan)
   vmodeLan <- fmsy.densLan$x[which.max(fmsy.densLan$y)]
 
   FmsyCat <- Fscan[maxpf]
   msymCat <- mean(FmsyCat)
-  vcumCat <- stats::median(FmsyCat)
-  fmsy.densCat <- stats::density(FmsyCat)
+  vcumCat <-    median(FmsyCat)
+  fmsy.densCat <-    density(FmsyCat)
   vmodeCat <- fmsy.densCat$x[which.max(fmsy.densCat$y)]
 
   pFmsyCat <- data.frame(
@@ -614,10 +614,10 @@ eqsim_run <- function(fit,
   # GENERATE REF-TABLE
   catF <- c(flim, flim10, flim50, vcumCat, Fscan[maxcatm], FCrash05, FCrash50)
   lanF <- c(NA, NA, NA, vcumLan, Fscan[maxlanm], NA, NA)
-  catC <- stats::approx(Fscan, cats[4, ], xout = catF)$y
-  lanC <- stats::approx(Fscan, lans[4, ], xout = lanF)$y
-  catB <- stats::approx(Fscan, ssbs[4, ], xout = catF)$y
-  lanB <- stats::approx(Fscan, ssbs[4, ], xout = lanF)$y
+  catC <-    approx(Fscan, cats[4, ], xout = catF)$y
+  lanC <-    approx(Fscan, lans[4, ], xout = lanF)$y
+  catB <-    approx(Fscan, ssbs[4, ], xout = catF)$y
+  lanB <-    approx(Fscan, ssbs[4, ], xout = lanF)$y
 
   Refs <- rbind(catF, lanF, catC, lanC, catB, lanB)
   rownames(Refs) <- c("catF", "lanF", "catch", "landings", "catB", "lanB")
@@ -629,14 +629,14 @@ eqsim_run <- function(fit,
   # CALCULATIONS:
 
   # Fmsy: value that maximises median LT catch or median LT landings
-  auxi <- stats::approx(Fscan, cats[4, ], xout = seq(min(Fscan), max(Fscan), length = 200))
+  auxi <-    approx(Fscan, cats[4, ], xout = seq(min(Fscan), max(Fscan), length = 200))
   FmsyMedianC <- auxi$x[which.max(auxi$y)]
   MSYMedianC <- max(auxi$y)
   # Value of F that corresponds to 0.95*MSY:
   FmsylowerMedianC <- auxi$x[min((1:length(auxi$y))[auxi$y / MSYMedianC >= 0.95])]
   FmsyupperMedianC <- auxi$x[max((1:length(auxi$y))[auxi$y / MSYMedianC >= 0.95])]
 
-  auxi <- stats::approx(Fscan, lans[4, ], xout = seq(min(Fscan), max(Fscan), length = 200))
+  auxi <-    approx(Fscan, lans[4, ], xout = seq(min(Fscan), max(Fscan), length = 200))
   FmsyMedianL <- auxi$x[which.max(auxi$y)]
   MSYMedianL <- max(auxi$y)
 

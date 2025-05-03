@@ -7,9 +7,9 @@
 initial(model, data)
 }
 \arguments{
-\item{model}{XXX}
+\item{model}{the model name, i.e. "Ricker", "Segreg", "Bevholt"}
 
-\item{data}{XXX}
+\item{data}{a data frame with columns rec and ssb}
 }
 \value{
 vector of starting values

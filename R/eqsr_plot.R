@@ -22,12 +22,12 @@ globalVariables(c("rec", "year", "Model", "p05", "p95", "p50"))
 #' model averaging procedure.
 #'
 #' @examples
-#'
 #' \dontrun{
 #' data(icesStocks)
 #' FIT <- eqsr_fit(icesStocks$saiNS,
-#'                 nsamp = 1000,
-#'                 models = c("Ricker", "Segreg"))
+#'   nsamp = 1000,
+#'   models = c("Ricker", "Segreg")
+#' )
 #'
 #' eqsr_plot(FIT, n = 20000)
 #'
@@ -38,15 +38,16 @@ globalVariables(c("rec", "year", "Model", "p05", "p95", "p50"))
 #' @importFrom mgcv gam
 #' @importFrom grDevices grey
 #'
+#' @importFrom ggplot2 geom_path
+#'
 #' @export
-eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
-                       ggPlot = FALSE, Scale = 1)
-{
+eqsr_plot <- function(fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
+                      ggPlot = FALSE, Scale = 1) {
   # get the draws from the SR parameter simulations
   modset <- fit$sr.sto
 
   # get the full data set
-  data <- fit$rby[,c("year", "rec", "ssb")]
+  data <- fit$rby[, c("year", "rec", "ssb")]
 
   # set up ranges
   minSSB <- min(data$ssb, max(data$ssb) * 0.0125)
@@ -64,9 +65,9 @@ eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
     # has a (potrentially) different form, parameter estimates and residual CV.
     sample_rec <- function(i) {
       # what SR model are we simulting from:
-      FUN <-  match.fun(modset$model[i])
+      FUN <- match.fun(modset$model[i])
       # simulate from _predictive_ distribrution of recruitment
-      exp( FUN(modset[i,], ssb_eval) + stats::rnorm(length(ssb_eval), sd = modset $ cv[i]) )
+      exp(FUN(modset[i, ], ssb_eval) + rnorm(length(ssb_eval), sd = modset$ cv[i]))
     }
 
     # (up)sample the model fits
@@ -74,47 +75,53 @@ eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
     rec_sim <- sapply(ids, sample_rec)
 
     # form into a big DF
-    out <- data.frame(grp = rep(1:length(ssb_eval), n_mods),
-                      mid.grp = rep(ssb_eval, n_mods),
-                      ssb = jitter(rep(ssb_eval, n_mods), 2), # jitter for nices plotting
-                      rec = c(rec_sim),
-                      model = rep(modset[ids,"model"], each = length(ssb_eval)))
+    out <- data.frame(
+      grp = rep(1:length(ssb_eval), n_mods),
+      mid.grp = rep(ssb_eval, n_mods),
+      ssb = jitter(rep(ssb_eval, n_mods), 2), # jitter for nices plotting
+      rec = c(rec_sim),
+      model = rep(modset[ids, "model"], each = length(ssb_eval))
+    )
 
     tmp <- paste(fit$sr.det$model, fit$sr.det$prop)
     names(tmp) <- fit$sr.det$model
     out$Model <- tmp[out$model]
 
     # calculate smooth recruitment median and 5th and 95th percentile for plotting
-    fit50 <- mgcv::gam(rec ~ s(ssb, m = 0),
-                data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, stats::quantile, .50)))
-    fit05 <- mgcv::gam(rec ~ s(ssb, m = 0),
-                data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, stats::quantile, .05)))
-    fit95 <- mgcv::gam(rec ~ s(ssb, m = 0),
-                data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, stats::quantile, .95)))
+    fit50 <- gam(rec ~ s(ssb, m = 0),
+      data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, quantile, .50))
+    )
+    fit05 <- gam(rec ~ s(ssb, m = 0),
+      data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, quantile, .05))
+    )
+    fit95 <- gam(rec ~ s(ssb, m = 0),
+      data = data.frame(ssb = ssb_eval, rec = apply(rec_sim, 1, quantile, .95))
+    )
 
     Percentiles <-
       data.frame(
         ssb = ssb_eval,
-        p50 = stats::fitted(fit50),
-        p05 = stats::fitted(fit05),
-        p95 = stats::fitted(fit95)
+        p50 = fitted(fit50),
+        p05 = fitted(fit05),
+        p95 = fitted(fit95)
       )
-    Percentiles <- Percentiles[stats::complete.cases(Percentiles),]
-
+    Percentiles <- Percentiles[complete.cases(Percentiles), ]
   }
 
-  if(!ggPlot) {
-
+  if (!ggPlot) {
     # set up plot
-    plot(0, 0, type = "n",
-         xlim = c(0, maxSSB), ylim = c(0, maxrec), las = 1,
-         xlab = "Spawning stock biomass", ylab="Recruitment",
-         main = paste("Predictive distribution of recruitment\nfor", fit$id.sr))
+    plot(0, 0,
+      type = "n",
+      xlim = c(0, maxSSB), ylim = c(0, maxrec), las = 1,
+      xlab = "Spawning stock biomass", ylab = "Recruitment",
+      main = paste("Predictive distribution of recruitment\nfor", fit$id.sr)
+    )
 
     if (!is.null(modset)) {
       points(out$ssb, out$rec,
-             pch = 20, cex = 1,
-             col = grey(0, alpha = 0.02))
+        pch = 20, cex = 1,
+        col = grey(0, alpha = 0.02)
+      )
 
       lines(p50 ~ ssb, col = 7, lwd = 3, data = Percentiles)
       lines(p05 ~ ssb, col = 4, lwd = 3, data = Percentiles)
@@ -125,7 +132,7 @@ eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
     x <- fit$sr.det
     y <- seq(1, round(maxSSB), length = 100)
     for (i in 1:nrow(x)) {
-      lines(y, exp(match.fun(as.character(x$model[i])) (x[i,], y)), col = "black", lwd = 2, lty = i)
+      lines(y, exp(match.fun(as.character(x$model[i]))(x[i, ], y)), col = "black", lwd = 2, lty = i)
     }
 
     # plot the observation points
@@ -134,63 +141,66 @@ eqsr_plot <- function (fit, n = 20000, x.mult = 1.1, y.mult = 1.4,
     # plot the model weights on the graph
     for (i in 1:nrow(fit$sr.det)) {
       text(0.2 * maxSSB,
-           maxrec*(1 - i/10),
-           paste(fit$sr.det$model[i], round(fit$sr.det$prop[i], 2)),
-           cex = 0.9, adj = 1)
+        maxrec * (1 - i / 10),
+        paste(fit$sr.det$model[i], round(fit$sr.det$prop[i], 2)),
+        cex = 0.9, adj = 1
+      )
     }
-
   } else { # ggplot
     #
     x <- fit$sr.det
-    ssb <- seq(1,round(max(maxSSB)),length=100)
-    z <- sapply(1:nrow(x), function(i) rec <- exp(match.fun(as.character(x$model[i])) (x[i,], ssb)))
-    modelLines <- as.data.frame(cbind(ssb,z))
-    names(modelLines) <- c("ssb",paste(x$model,x$prop))
-    modelLines <- reshape2::melt(modelLines,id.var="ssb",variable.name="Model",value.name="rec")
+    ssb <- seq(1, round(max(maxSSB)), length = 100)
+    z <- sapply(1:nrow(x), function(i) rec <- exp(match.fun(as.character(x$model[i]))(x[i, ], ssb)))
+    modelLines <- as.data.frame(cbind(ssb, z))
+    names(modelLines) <- c("ssb", paste(x$model, x$prop))
+    modelLines <- melt(modelLines, id.var = "ssb", variable.name = "Model", value.name = "rec")
 
     if (!is.null(modset)) {
-      out$ssb <- out$ssb/Scale
-      out$rec <- out$rec/Scale
-      out$mid.grp <- out$mid.grp/Scale
-      Percentiles$ssb <- Percentiles$ssb/Scale
-      Percentiles$p50 <- Percentiles$p50/Scale
-      Percentiles$p05 <- Percentiles$p05/Scale
-      Percentiles$p95 <- Percentiles$p95/Scale
-      i <- sample(nrow(out),n)
+      out$ssb <- out$ssb / Scale
+      out$rec <- out$rec / Scale
+      out$mid.grp <- out$mid.grp / Scale
+      Percentiles$ssb <- Percentiles$ssb / Scale
+      Percentiles$p50 <- Percentiles$p50 / Scale
+      Percentiles$p05 <- Percentiles$p05 / Scale
+      Percentiles$p95 <- Percentiles$p95 / Scale
+      i <- sample(nrow(out), n)
     }
-    modelLines$ssb <- modelLines$ssb/Scale
-    modelLines$rec <- modelLines$rec/Scale
+    modelLines$ssb <- modelLines$ssb / Scale
+    modelLines$rec <- modelLines$rec / Scale
 
-    fit$rby$ssb <- fit$rby$ssb/Scale
-    fit$rby$rec <- fit$rby$rec/Scale
+    fit$rby$ssb <- fit$rby$ssb / Scale
+    fit$rby$rec <- fit$rby$rec / Scale
 
     if (!is.null(modset)) {
-      ggplot2::ggplot(out[i,]) +
-        ggplot2::theme_bw() +
-        ggplot2::geom_point(ggplot2::aes(x=ssb,y=rec,colour=Model),size=1, alpha = 0.2) +
-        ggplot2::geom_line(data=Percentiles,ggplot2::aes(x=ssb,y=p05),colour="blue", lwd = 1.5) +
-        ggplot2::geom_line(data=Percentiles,ggplot2::aes(x=ssb,y=p95),colour="blue", lwd = 1.5) +
-        ggplot2::geom_line(data=Percentiles,ggplot2::aes(ssb,p50),col="yellow", lwd = 1.5) +
-        ggplot2::geom_line(data=modelLines,ggplot2::aes(ssb,rec,colour=Model),lwd=1.5) +
-        ggplot2::coord_cartesian(ylim=c(0, stats::quantile(out$rec[i],0.99))) +
-        ggplot2::geom_path(data=fit$rby, ggplot2::aes(ssb, rec), col="black",linetype=2, lwd = 1) +
-        ggplot2::geom_text(data=fit$rby, ggplot2::aes(ssb, rec, label = substr(year,3,4)),size=4,col="black",angle=45) +
-        ggplot2::theme(legend.position = c(0.20, 0.85)) +
-        ggplot2::labs(x = "Spawning stock biomass",
-                      y = "Recruitment",
-                      colour="Model")
+      ggplot(out[i, ]) +
+        theme_bw() +
+        geom_point(aes(x = ssb, y = rec, colour = Model), size = 1, alpha = 0.2) +
+        geom_line(data = Percentiles, aes(x = ssb, y = p05), colour = "blue", lwd = 1.5) +
+        geom_line(data = Percentiles, aes(x = ssb, y = p95), colour = "blue", lwd = 1.5) +
+        geom_line(data = Percentiles, aes(ssb, p50), col = "yellow", lwd = 1.5) +
+        geom_line(data = modelLines, aes(ssb, rec, colour = Model), lwd = 1.5) +
+        coord_cartesian(ylim = c(0, quantile(out$rec[i], 0.99))) +
+        geom_path(data = fit$rby, aes(ssb, rec), col = "black", linetype = 2, lwd = 1) +
+        geom_text(data = fit$rby, aes(ssb, rec, label = substr(year, 3, 4)), size = 4, col = "black", angle = 45) +
+        theme(legend.position = c(0.20, 0.85)) +
+        labs(
+          x = "Spawning stock biomass",
+          y = "Recruitment",
+          colour = "Model"
+        )
     } else {
-      ggplot2::ggplot(fit$rby) +
-        ggplot2::theme_bw() +
-        ggplot2::geom_point(ggplot2::aes(x=ssb,y=rec),size=1, alpha = 0.2) +
-        ggplot2::geom_line(data=modelLines,ggplot2::aes(ssb,rec,colour=Model),lwd=1.5) +
-        ggplot2::geom_path(data=fit$rby, ggplot2::aes(ssb, rec), col="black",linetype=2, lwd = 1) +
-        ggplot2::geom_text(data=fit$rby, ggplot2::aes(ssb, rec, label = substr(year,3,4)),size=4,col="black",angle=45) +
-        ggplot2::theme(legend.position = c(0.20, 0.85)) +
-        ggplot2::labs(x = "Spawning stock biomass",
-                      y = "Recruitment",
-                      colour="Model")
+      ggplot(fit$rby) +
+        theme_bw() +
+        geom_point(aes(x = ssb, y = rec), size = 1, alpha = 0.2) +
+        geom_line(data = modelLines, aes(ssb, rec, colour = Model), lwd = 1.5) +
+        geom_path(data = fit$rby, aes(ssb, rec), col = "black", linetype = 2, lwd = 1) +
+        geom_text(data = fit$rby, aes(ssb, rec, label = substr(year, 3, 4)), size = 4, col = "black", angle = 45) +
+        theme(legend.position = c(0.20, 0.85)) +
+        labs(
+          x = "Spawning stock biomass",
+          y = "Recruitment",
+          colour = "Model"
+        )
     }
-
   }
 }

@@ -166,34 +166,34 @@ eqsim_ggplot <- function(sim, Scale = 1, plotit = TRUE) {
     theme(legend.position = "none")
 
   if (plotit) {
-    vplayout <- function(x, y)  viewport(layout.pos.row = x, layout.pos.col = y)
+    vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
     grid.newpage()
-    pushViewport( viewport(layout =  grid.layout(2, 2)))
+    pushViewport(viewport(layout = grid.layout(2, 2)))
     print(
       plotSSB + theme(
-        panel.margin =  unit(c(0, 0, 0, 0), "cm"),
-        plot.margin =  unit(c(0, 0.25, 0, 0), "cm")
+        panel.margin = unit(c(0, 0, 0, 0), "cm"),
+        plot.margin = unit(c(0, 0.25, 0, 0), "cm")
       ),
       vp = vplayout(1, 1)
     )
     print(
       plotR + theme(
-        panel.margin =  unit(c(0, 0, 0, 0), "cm"),
-        plot.margin =  unit(c(0, 0.25, 0, 0), "cm")
+        panel.margin = unit(c(0, 0, 0, 0), "cm"),
+        plot.margin = unit(c(0, 0.25, 0, 0), "cm")
       ),
       vp = vplayout(1, 2)
     )
     print(
       plotYield + theme(
-        panel.margin =  unit(c(0, 0, 0, 0), "cm"),
-        plot.margin =  unit(c(0, 0.25, 0, 0), "cm")
+        panel.margin = unit(c(0, 0, 0, 0), "cm"),
+        plot.margin = unit(c(0, 0.25, 0, 0), "cm")
       ),
       vp = vplayout(2, 1)
     )
     print(
       plotProbs + theme(
-        panel.margin =  unit(c(0, 0, 0, 0), "cm"),
-        plot.margin =  unit(c(0, 0.25, 0, 0), "cm")
+        panel.margin = unit(c(0, 0, 0, 0), "cm"),
+        plot.margin = unit(c(0, 0.25, 0, 0), "cm")
       ),
       vp = vplayout(2, 2)
     )
