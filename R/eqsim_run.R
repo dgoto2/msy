@@ -131,7 +131,7 @@
 #'
 #' @importFrom TAF msg
 #' @importFrom stats rnorm loess predict approx cor
-#' @importFrom stats quantile median density complete.cases fitted
+#' @importFrom stats quantile median density complete.cases fitted dnorm
 #'
 #' @importFrom FLCore window catch.n catch.wt harvest
 #' @importFrom FLCore harvest.spwn landings.n landings.wt m m.spwn mat stock.wt
